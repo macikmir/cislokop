@@ -1,13 +1,15 @@
 "use strict";
 // Řízení hry: obrazovky (úvod, mapa, úroveň), kola, hvězdy, nápověda, nastavení.
 (function () {
-  const VERSION = "1";                // jen pro zobrazení; cache se čísluje v sw.js
+  const VERSION = "2";                // jen pro zobrazení; cache se čísluje v sw.js
   const $ = (id) => document.getElementById(id);
   const el = MM.el;
   const stage = $("stage");
   const params = new URLSearchParams(location.search);
 
   MM.art.init();
+  const applyCaps = () => document.body.classList.toggle("caps", MM.store.caps);
+  applyCaps();
 
   // ---------- zvětšení scény podle okna ----------
   // Výška je vždy 540 logických px; šířka se natáhne podle poměru stran
@@ -101,7 +103,7 @@
       // úvodní plošina světa s cedulí
       const h0 = HEIGHTS[n % HEIGHTS.length];
       const gate = column(w.theme, 130, h0);
-      el("div", "wsign", gate, w.name);
+      el("div", "wsign kid", gate, w.name);
       x += 130;
       w.levels.forEach((lv) => {
         const i = lv.index, h = HEIGHTS[n++ % HEIGHTS.length];
@@ -196,7 +198,13 @@
       alive: () => token.alive,
       // klávesnice na počítači: minihra si řekne, co chce slyšet
       keys(fn) { me.onKey = fn; },
-      prompt(text) { if (token.alive) { me.text = text; $("prompt").textContent = text; } },
+      // text = pár slov na obrazovku; spoken = delší věta, kterou přečte reproduktor
+      prompt(text, spoken) {
+        if (!token.alive) return;
+        me.text = spoken || text;
+        $("prompt").textContent = text;
+        $("prompt").classList.toggle("long", text.length > 22);
+      },
       mistake() {
         if (!token.alive) return;
         me.mistakes++;
@@ -262,8 +270,8 @@
     MM.store.setStars(me.level.id, stars);
     const last = me.level.index === L.length - 1;
     $("resTitle").textContent = stars === 3 ? "Paráda!" : stars === 2 ? "Výborně!" : "Hotovo!";
-    $("resText").textContent = last ? "Prošel jsi celý svět. Jsi mistr Číslokop!"
-      : stars === 3 ? "Bez nápovědy a skoro bez chyb." : "Zkus to příště bez nápovědy a získáš víc hvězd.";
+    $("resText").textContent = last ? "Jsi mistr Číslokop!"
+      : stars === 3 ? "Tři hvězdy!" : "Bez nápovědy bude víc hvězd.";
     $("btnResNext").classList.toggle("hidden", last);
     const box = $("resStars");
     box.innerHTML = "";
@@ -305,6 +313,7 @@
   let resetArmed = false;
   function drawSettings() {
     $("setSound").textContent = "Zvuk: " + (MM.store.mute ? "vypnutý" : "zapnutý");
+    $("setCaps").textContent = "Písmo pro dítě: " + (MM.store.caps ? "VELKÁ PÍSMENA" : "malá písmena");
     $("setUnlock").textContent = "Všechny úrovně: " + (MM.store.unlockAll ? "odemčené" : "postupně");
     $("setReset").textContent = resetArmed ? "Opravdu smazat? Ťukni znovu" : "Smazat postup";
     $("ver").textContent = "Číslokop, verze " + VERSION;
@@ -315,6 +324,7 @@
     $("ov-settings").classList.remove("hidden");
   }
   $("setSound").addEventListener("click", () => { MM.store.mute = !MM.store.mute; MM.audio.play("tap"); drawSettings(); });
+  $("setCaps").addEventListener("click", () => { MM.store.caps = !MM.store.caps; applyCaps(); drawSettings(); });
   $("setUnlock").addEventListener("click", () => { MM.store.unlockAll = !MM.store.unlockAll; drawSettings(); });
   $("setReset").addEventListener("click", () => {
     if (resetArmed) MM.store.reset();

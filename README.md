@@ -4,7 +4,8 @@ Hra pro prvňáky (cca 7 let) do prohlížeče, na telefon i tablet. Malý horn�
 prochází kostičkovým světem a na každé zastávce řeší matematickou úlohu.
 Mechaniky úloh jsou inspirované hrou Matemág, obtížnost je posunutá na
 1. třídu (počítání do 10, později do 20). Grafika, postavy, název i úrovně
-jsou vlastní — celé se to kreslí kódem, ve hře není jediný obrázkový soubor.
+jsou vlastní — celé se to kreslí kódem, ve hře není jediný obrázkový soubor
+(kromě ikony aplikace).
 
 ## Co ve hře je
 
@@ -26,10 +27,15 @@ předchozích — jedna zapeklitá úloha hru nezastaví.
 nejdřív úlohu znázorní (kostičky k počítání, okénka „kolik má kdo dostat“,
 tečky ukazující cestu), při dalším stisku udělá jeden krok za hráče.
 Opakovanou nápovědou jde dohrát každé kolo. Po dvou chybách nebo delší
-nečinnosti se tlačítko samo rozkýve. Reproduktor u zadání text přečte nahlas
-(pokud má zařízení český hlas).
+nečinnosti se tlačítko samo rozkýve.
 
-Nastavení (ozubené kolo na mapě): zvuk, odemčení všech úrovní, smazání postupu.
+**Texty pro začínajícího čtenáře.** Na obrazovce jsou jen dvě až čtyři slova
+(„DEJ VŠEM STEJNĚ.“, „3 + 1 = ?“), písmem Andika navrženým pro první čtení
+a ve výchozím stavu VELKÝMI písmeny. Reproduktor u zadání přečte nahlas delší,
+vysvětlující větu (pokud má zařízení český hlas).
+
+Nastavení (ozubené kolo na mapě): zvuk, velká / malá písmena, odemčení všech
+úrovní, smazání postupu.
 
 ## Spuštění
 
@@ -59,7 +65,7 @@ Složka `inspirace/` (screenshoty cizí hry) je v `.gitignore` a na web nepatř�
 Hra je **PWA**: v Safari *Sdílet → Přidat na plochu* (Android: *Nainstalovat
 aplikaci*). Poběží celoobrazovkově na šířku, offline, s vlastní ikonou.
 
-**Při každé změně souborů zvyš verzi cache v `sw.js`** (`cislokop-v1` → `v2`),
+**Při každé změně souborů zvyš verzi cache v `sw.js`** (`cislokop-v2` → `v3`),
 jinak telefon podrží starou verzi. Nový soubor přidej i do seznamu `ASSETS`.
 Novou verzi si hra načte sama, jakmile je hráč na mapě. Na iPhonu se nová
 verze hledá jen při skutečném spuštění — aplikaci nejdřív zavři v přepínači.
@@ -92,7 +98,8 @@ MM.games.nazev = {
   start(ctx, zadani) {
     // ctx.root   – prázdný <div>, kam se hra vykreslí (ctx.W × ctx.H)
     // ctx.rnd    – seedovaný generátor náhodných čísel
-    // ctx.prompt(text), ctx.mistake(), ctx.solved(), ctx.alive(), ctx.keys(fn)
+    // ctx.prompt(text, spoken) – pár slov na obrazovku + delší věta pro reproduktor
+    // ctx.mistake(), ctx.solved(), ctx.alive(), ctx.keys(fn)
     return { hint() { /* poradí; vrátí true, když poradila */ } };
   },
 };
@@ -123,6 +130,7 @@ js/levels.js      – světy a úrovně (tady se hra rozšiřuje)
 js/games/feed.js  – Krmení        js/games/cart.js  – Cesta
 js/games/lift.js  – Výtah         js/games/chest.js – Truhla
 js/main.js        – mapa, průchod úrovní, hvězdy, nápověda, nastavení
+fonts/            – písmo Andika (SIL Open Font License, viz fonts/OFL.txt)
 sw.js             – offline cache
 tests.html        – kontrola, že všechna zadání mají řešení
 tools/icon.html   – předloha ikony (vyfotit v okně 512×512 → icons/)

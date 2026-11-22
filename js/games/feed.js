@@ -98,7 +98,7 @@
     const wrap = el("div", "feed", ctx.root);
     const pensEl = el("div", "feed-pens", wrap);
     const table = el("div", "feed-table", wrap);
-    el("div", "feed-table-label", table, "Spíž");
+    el("div", "feed-table-label kid", table, "Jídlo");
     const tableIn = el("div", "feed-table-in", table);
 
     const kinds = MM.shuffle(ctx.rnd, MM.art.animals);
@@ -143,7 +143,7 @@
     const state = { done: false, judged: false, meters: false, timer: 0 };
     let selected = null;
 
-    ctx.prompt(spec.note || "Rozděl jídlo. Všichni musí dostat stejně!");
+    ctx.prompt(spec.note || "Dej všem stejně.", spec.note || "Rozděl jídlo. Všichni musí dostat stejně.");
 
     function setMood(pen, mood) {
       if (pen.mood === mood) return;
@@ -199,14 +199,14 @@
         state.done = true;
         select(null);
         pens.forEach((pen) => { setMood(pen, "happy"); pen.face.classList.add("hop"); });
-        ctx.prompt("Výborně! Všichni mají stejně.");
+        ctx.prompt("Výborně!", "Výborně! Všichni mají stejně.");
         MM.audio.play("good");
         setTimeout(() => ctx.solved(), 1300);
         return;
       }
       // kdo má míň než ostatní, je smutný; kdo má navíc, směje se
       pens.forEach((pen, a) => setMood(pen, s[a] < T ? "sad" : s[a] > T ? "happy" : "calm"));
-      ctx.prompt("To není spravedlivé! Někdo má míň.");
+      ctx.prompt("Někdo má míň.", "To není spravedlivé. Někdo má míň.");
       if (!state.judged) { state.judged = true; ctx.mistake(); MM.audio.play("bad"); }
     }
 
@@ -229,9 +229,8 @@
       if (!state.meters) {
         state.meters = true;
         drawMeters();
-        ctx.prompt(P.kind === "pie"
-          ? "Okénka ukazují, kolik koláče má každý dostat."
-          : "Každý má dostat " + T + ". Okénka ti to ukážou.");
+        if (P.kind === "pie") ctx.prompt("Naplň okénka.", "Okénka ukazují, kolik koláče má každý dostat.");
+        else ctx.prompt("Každý má mít " + T + ".", "Každý má dostat " + T + ". Okénka ti to ukážou.");
         return true;
       }
       // Nápověda 2+: jeden kousek položí správně. Když současné rozložení
@@ -244,7 +243,7 @@
         if (best < 0) return false;
         place(pieces[best], sol[best]);
         MM.flash(pieces[best].el, "glow", 1200);
-        ctx.prompt("Tenhle kousek patří sem.");
+        ctx.prompt("Tohle patří sem.", "Tenhle kousek patří sem.");
         return true;
       }
       const s = sums();
@@ -257,7 +256,7 @@
       }) || mine[0];
       place(pick, -1);
       MM.flash(pick.el, "glow", 1200);
-      ctx.prompt("Tady toho bylo moc. Vracím kousek do spíže.");
+      ctx.prompt("Tady je moc.", "Tady toho bylo moc. Vracím kousek zpátky.");
       return true;
     }
 

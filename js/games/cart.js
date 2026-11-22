@@ -173,7 +173,7 @@
         b.addEventListener("click", () => move(d));
         padBtns[d] = b;
       });
-      ctx.prompt(spec.note || "Seber krystaly a dojdi k truhle.");
+      ctx.prompt(spec.note || "Dojdi k truhle.", spec.note || "Seber krystaly a dojdi k truhle.");
     } else {
       playBtn = el("button", "btn ok cart-play", bar);
       playBtn.innerHTML = MM.icon("play");
@@ -183,9 +183,10 @@
       clr.innerHTML = MM.icon("reset");
       clr.addEventListener("click", () => { if (!busy && !done) { prog = []; MM.audio.play("tap"); renderProg(); } });
       bankRow = el("div", "cart-row bank", bar);
-      ctx.prompt(spec.note || (mode === "given"
-        ? "Seřaď šipky a pusť je zeleným tlačítkem."
-        : "Naplánuj cestu ze šipek. Lávě se vyhni!"));
+      ctx.prompt(spec.note || (mode === "given" ? "Seřaď šipky." : "Naplánuj cestu."),
+        (spec.note ? spec.note + " " : "") + (mode === "given"
+          ? "Seřaď šipky a pusť je zeleným tlačítkem."
+          : "Naplánuj cestu ze šipek a pusť ji zeleným tlačítkem. Lávě se vyhni."));
       renderProg();
     }
 
@@ -246,10 +247,10 @@
     }
 
     const FAIL = {
-      rock: "Au! Tudy cesta nevede.",
-      lava: "Pozor, láva! Zkus to jinudy.",
-      gems: "Ještě ti chybí krystal.",
-      far: "Ještě nejsi u truhly.",
+      rock: ["Au! Tudy ne.", "Au! Tudy cesta nevede."],
+      lava: ["Pozor, láva!", "Pozor, láva! Zkus to jinudy."],
+      gems: ["Chybí krystal.", "Ještě ti chybí krystal."],
+      far: ["Nejsi u truhly.", "Ještě nejsi u truhly."],
     };
 
     async function walkTo(p) {
@@ -268,7 +269,7 @@
       goalEl.style.backgroundImage = "var(--s-chestopen)";
       MM.flash(hero, "hop", 800);
       MM.audio.play("good");
-      ctx.prompt("Výborně! Jsi u truhly.");
+      ctx.prompt("Výborně!", "Výborně! Jsi u truhly.");
       setTimeout(() => ctx.solved(), 1200);
     }
 
@@ -285,7 +286,7 @@
       collect();
       busy = false;
       if (atGoal(G, st)) win();
-      else if (st.x === G.goal.x && st.y === G.goal.y) ctx.prompt("Truhla je zamčená. Najdi ještě krystaly!");
+      else if (st.x === G.goal.x && st.y === G.goal.y) ctx.prompt("Seber krystaly.", "Truhla je zamčená. Seber nejdřív krystaly.");
     }
 
     // spuštění programu
@@ -311,7 +312,7 @@
       if (res.ok) { busy = false; return win(); }
       ctx.mistake();
       MM.audio.play("bad");
-      ctx.prompt(FAIL[res.fail]);
+      ctx.prompt(FAIL[res.fail][0], FAIL[res.fail][1]);
       if (res.fail === "lava") hero.classList.add("burn");
       await MM.sleep(1100);
       if (!ctx.alive()) return;
@@ -343,7 +344,7 @@
         if (!dirs || !dirs.length) return false;
         showPath(st, run(G, merge(dirs), st).path);
         MM.flash(padBtns[dirs[0]], "glow", 1500);
-        ctx.prompt("Zkus jít " + DIRS[dirs[0]].name + ". Tečky ti ukážou cestu.");
+        ctx.prompt("Jdi " + DIRS[dirs[0]].name + ".", "Zkus jít " + DIRS[dirs[0]].name + ". Tečky ti ukážou cestu.");
         return true;
       }
       // celé správné řešení od startu
@@ -352,13 +353,13 @@
         : merge(solveSteps(G) || []);
       if (hints === 1) {                // poprvé jen ukáže cestu tečkami
         showPath(G.start, run(G, full).path);
-        ctx.prompt("Tečky ti ukazují cestu. Poskládej podle nich šipky.");
+        ctx.prompt("Jdi po tečkách.", "Tečky ti ukazují cestu. Poskládej podle nich šipky.");
         return true;
       }
       // potom opravuje program: špatnou kartičku vrátí, správnou přidá
       if (run(G, program()).ok) {
         MM.flash(playBtn, "glow", 1500);
-        ctx.prompt("Program je hotový. Pusť ho zeleným tlačítkem!");
+        ctx.prompt("Zmáčkni zelené tlačítko.", "Šipky jsou správně. Zmáčkni zelené tlačítko.");
         return true;
       }
       if (mode === "given") {
@@ -366,10 +367,10 @@
         if (!sol) {
           if (!prog.length) return false;
           prog.pop();
-          ctx.prompt("Tahle šipka sem nepatří. Vracím ji.");
+          ctx.prompt("Tahle šipka ne.", "Tahle šipka sem nepatří. Vracím ji.");
         } else {
           prog.push(sol[prog.length]);
-          ctx.prompt("Přidal jsem ti další šipku.");
+          ctx.prompt("Přidal jsem šipku.", "Přidal jsem ti další šipku.");
         }
       } else {
         const r = run(G, prog);
@@ -379,10 +380,10 @@
         if (!fits) {
           if (!prog.length) return false;
           prog.pop();
-          ctx.prompt("Tahle šipka sem nepatří. Mažu ji.");
+          ctx.prompt("Tahle šipka ne.", "Tahle šipka sem nepatří. Mažu ji.");
         } else {
           addStep(rest[0]);
-          ctx.prompt("Přidal jsem ti další krok.");
+          ctx.prompt("Přidal jsem krok.", "Přidal jsem ti další krok.");
         }
       }
       showPath(G.start, run(G, full).path);

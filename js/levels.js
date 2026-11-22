@@ -159,7 +159,7 @@ MM.worlds = [
       ] },
       { id: "d8", game: "cart", rounds: [
         { mode: "given", grid: ["g...g", ".#.#.", "S#C#.", "....."], tiles: ["R4", "D3", "U2", "L2", "R2", "D2"],
-          note: "Pozor, některé šipky jsou navíc!" },
+          note: "Některé šipky jsou navíc." },
         { mode: "given", grid: ["S.#g..", "..#.#.", ".L...C", "...#.."],
           tiles: ["R2", "U2", "D3", "R1", "D2", "U1", "R2"] },
         { mode: "given", grid: ["S..L.g", ".#.L..", ".#...#", "...#.C"],

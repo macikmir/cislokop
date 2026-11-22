@@ -27,7 +27,7 @@
     <div class="sky-clouds"></div>
     <div class="title-box">
       <h1 class="logo">ČÍSLOKOP</h1>
-      <p class="logo-sub">kostičková matematika</p>
+      <p class="logo-sub kid">kostičková matematika</p>
       <div class="title-crew" id="titleCrew"></div>
       <button id="btnPlay" class="btn ok big">HRÁT</button>
     </div>
@@ -51,7 +51,7 @@
       <button id="btnBack" class="btn round" aria-label="Zpět na mapu"></button>
       <div id="lights"></div>
       <div id="promptBox">
-        <span id="prompt"></span>
+        <span id="prompt" class="kid"></span>
         <button id="btnSpeak" class="speak" aria-label="Přečíst nahlas"></button>
       </div>
       <button id="btnHint" class="btn round hintbtn" aria-label="Nápověda">?</button>
@@ -62,9 +62,9 @@
   <!-- výsledek úrovně -->
   <div id="ov-result" class="overlay hidden">
     <div class="panel">
-      <h2 id="resTitle">Hotovo!</h2>
+      <h2 id="resTitle" class="kid">Hotovo!</h2>
       <div id="resStars" class="res-stars"></div>
-      <p id="resText" class="res-text"></p>
+      <p id="resText" class="res-text kid"></p>
       <div class="panel-btns">
         <button id="btnResMap" class="btn round" aria-label="Mapa"></button>
         <button id="btnResAgain" class="btn round" aria-label="Znovu"></button>
@@ -78,6 +78,7 @@
     <div class="panel">
       <h2>Nastavení</h2>
       <button id="setSound" class="btn wide"></button>
+      <button id="setCaps" class="btn wide"></button>
       <button id="setUnlock" class="btn wide"></button>
       <button id="setReset" class="btn wide no"></button>
       <button id="setClose" class="btn ok wide">Zavřít</button>
@@ -89,7 +90,7 @@
 </div>
 
 <!-- na výšku se hrát nedá pohodlně -->
-<div id="rotate" class="hidden"><div class="rot-phone"></div><p>Otoč telefon na šířku</p></div>
+<div id="rotate" class="hidden"><div class="rot-phone"></div><p class="kid">Otoč telefon</p></div>
 
 <script src="js/util.js"></script>
 <script src="js/store.js"></script>

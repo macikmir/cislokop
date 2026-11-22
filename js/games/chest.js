@@ -146,9 +146,10 @@
     okBtn.innerHTML = MM.icon("check");
     okBtn.addEventListener("click", check);
 
-    ctx.prompt(spec.note || (P.type === "eq"
-      ? "Jaké číslo chybí? Odemkni truhlu!"
-      : "Cihla je součet dvou cihel pod ní. Doplň čísla!"));
+    ctx.prompt(spec.note || (P.type === "eq" ? "Které číslo chybí?" : "Doplň čísla."),
+      spec.note || (P.type === "eq"
+        ? "Které číslo chybí? Doplň ho a odemkni truhlu."
+        : "Každá cihla je součet dvou cihel pod ní. Doplň čísla."));
     render();
     select(firstEmpty());
     ctx.keys((k) => {
@@ -231,7 +232,7 @@
       ctx.mistake();
       MM.audio.play("bad");
       wrong.forEach((i) => { cells[i].classList.add("bad"); MM.flash(cells[i], "shake", 500); });
-      ctx.prompt("Něco nesedí. Zkus červená čísla opravit.");
+      ctx.prompt("Oprav červená čísla.", "Něco nesedí. Zkus červená čísla opravit.");
       select(wrong[0]);
     }
     function win() {
@@ -242,7 +243,7 @@
       MM.flash(box, "hop", 800);
       MM.art.sprite("s-gem", side, "chest-gem");
       MM.audio.play("gem");
-      ctx.prompt("Truhla je otevřená!");
+      ctx.prompt("Otevřeno!", "Truhla je otevřená!");
       setTimeout(() => ctx.solved(), 1300);
     }
 
@@ -259,12 +260,12 @@
       const line = el("div", "help-line", help);
       if (step.cell === r.s) {
         cubes(line, v[r.l], "a"); el("b", "", line, "+"); cubes(line, v[r.r], "b"); el("b", "", line, "= ?");
-        ctx.prompt("Kolik je " + v[r.l] + " + " + v[r.r] + "? Spočítej kostičky.");
+        ctx.prompt(v[r.l] + " + " + v[r.r] + " = ?", "Kolik je " + v[r.l] + " plus " + v[r.r] + "? Spočítej kostičky.");
       } else {
         const known = step.cell === r.l ? v[r.r] : v[r.l];
         cubes(line, known, "a"); cubes(line, v[r.s] - known, "q");
         el("b", "", line, "= " + v[r.s]);
-        ctx.prompt(known + " a kolik je " + v[r.s] + "? Spočítej prázdné kostičky.");
+        ctx.prompt(known + " + ? = " + v[r.s], known + " a kolik je " + v[r.s] + "? Spočítej prázdné kostičky.");
       }
     }
     function hint() {
@@ -276,7 +277,7 @@
         setVal(wrong, null);
         select(wrong);
         hinted = -1;
-        ctx.prompt("Tohle číslo tam nepatří. Zkus jiné.");
+        ctx.prompt("Zkus jiné číslo.", "Tohle číslo tam nepatří. Zkus jiné.");
         return true;
       }
       const step = propagate(P.rels, vals).steps[0];
@@ -293,7 +294,7 @@
       if (P.input === "bank") putTile(step.cell, tiles.find((t) => !t.used && t.v === x));
       else setVal(step.cell, x);
       MM.flash(cells[step.cell], "glow", 1200);
-      ctx.prompt("Doplnil jsem ti jedno číslo.");
+      ctx.prompt("Pomohl jsem ti.", "Doplnil jsem ti jedno číslo.");
       const nx = firstEmpty(step.cell + 1);
       select(nx);
       return true;

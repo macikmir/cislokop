@@ -2,7 +2,7 @@
 // Uložený postup: hvězdy za úrovně a nastavení. Vše v localStorage.
 MM.store = (function () {
   const KEY = "cislokop_save_v1";
-  let data = { stars: {}, mute: false, unlockAll: false };
+  let data = { stars: {}, mute: false, unlockAll: false, caps: true };
 
   function load() {
     // localStorage může být v restriktivním režimu prohlížeče nedostupné
@@ -13,6 +13,7 @@ MM.store = (function () {
           stars: raw.stars && typeof raw.stars === "object" ? raw.stars : {},
           mute: !!raw.mute,
           unlockAll: !!raw.unlockAll,
+          caps: raw.caps !== false,
         };
       }
     } catch (e) { /* začneme od nuly */ }
@@ -35,6 +36,9 @@ MM.store = (function () {
     set mute(v) { data.mute = !!v; save(); },
     get unlockAll() { return data.unlockAll; },
     set unlockAll(v) { data.unlockAll = !!v; save(); },
+    // texty pro dítě VELKÝMI písmeny (začínající čtenáři je znají dřív)
+    get caps() { return data.caps; },
+    set caps(v) { data.caps = !!v; save(); },
     reset() { data.stars = {}; save(); },
   };
 })();

@@ -120,17 +120,18 @@
         b.addEventListener("click", () => press(s));
         btns[s] = b;
       });
-      ctx.prompt(spec.note || "Dojeď výtahem pro krystaly.");
+      ctx.prompt(spec.note || "Dojeď pro krystal.",
+        spec.note || "Dojeď výtahem pro krystaly. Číslo na tlačítku říká, o kolik pater výtah pojede.");
     } else {
-      el("div", "lift-q", side, "Kam výtah dojede?");
       const row = el("div", "lift-prog", side);
       progEls = P.program.map((s) => {
         const t = el("div", "ptile " + (s > 0 ? "up" : "down"), row);
         t.innerHTML = MM.arrow(s > 0 ? "U" : "D") + "<b>" + Math.abs(s) + "</b>";
         return t;
       });
-      el("div", "lift-tip", side, "Ťukni na správné patro.");
-      ctx.prompt(spec.note || "Výtah pojede podle šipek. Na kterém patře zastaví?");
+      el("div", "lift-tip kid", side, "Ťukni na patro.");
+      ctx.prompt(spec.note || "Kde výtah zastaví?",
+        spec.note || "Výtah pojede podle šipek. Na kterém patře zastaví? Ťukni na něj.");
     }
 
     // odjede o s pater a nahlas (číslem v bublině) počítá kroky
@@ -156,7 +157,7 @@
         ctx.mistake();
         MM.flash(cabin, "shake", 400);
         MM.audio.play("bad");
-        ctx.prompt(s > 0 ? "Tak vysoko věž nevede!" : "Níž už to nejde!");
+        ctx.prompt(s > 0 ? "Výš to nejde!" : "Níž to nejde!");
         return;
       }
       busy = true;
@@ -173,10 +174,10 @@
         done = true;
         MM.flash(hero, "hop", 800);
         MM.audio.play("good");
-        ctx.prompt("Výborně! Máš všechny krystaly.");
+        ctx.prompt("Výborně!", "Výborně! Máš všechny krystaly.");
         setTimeout(() => ctx.solved(), 1100);
       } else {
-        ctx.prompt("Jsi v patře " + floor + ". Krystal je v patře " + nearest() + ".");
+        ctx.prompt("Dojeď pro krystal.", "Jsi v patře " + floor + ". Krystal je v patře " + nearest() + ".");
       }
     }
     function nearest() {
@@ -191,7 +192,7 @@
         ctx.mistake();
         MM.flash(rows[f].el, "wrong", 700);
         MM.audio.play("bad");
-        ctx.prompt("Tam ne. Zkus si cestu odpočítat po patrech.");
+        ctx.prompt("Tam ne. Počítej patra.", "Tam ne. Zkus si cestu odpočítat po patrech.");
         return;
       }
       busy = true;
@@ -207,7 +208,7 @@
       done = true;
       MM.flash(hero, "hop", 800);
       MM.audio.play("good");
-      ctx.prompt("Správně! Výtah zastavil v patře " + answer + ".");
+      ctx.prompt("Správně! Patro " + answer + ".", "Správně! Výtah zastavil v patře " + answer + ".");
       setTimeout(() => ctx.solved(), 1100);
     }
 
@@ -225,20 +226,20 @@
         MM.flash(btns[best.r[0]], "glow", 1800);
         MM.flash(rows[best.t].el, "target", 1800);
         const n = Math.abs(best.t - floor);
-        ctx.prompt("Krystal je o " + n + " " + MM.plural(n, "patro", "patra", "pater") +
-          (best.t > floor ? " výš" : " níž") + ". Zkus svítící tlačítko.");
+        const how = "o " + n + " " + MM.plural(n, "patro", "patra", "pater") + (best.t > floor ? " výš" : " níž");
+        ctx.prompt("O" + how.slice(1) + ".", "Krystal je " + how + ". Zkus svítící tlačítko.");
         return true;
       }
       // předpověď: výtah odjede další krok, zbytek je kratší
       if (progAt >= P.program.length) {
         MM.flash(rows[floor].el, "target", 1800);
-        ctx.prompt("Výtah už dojel. Ťukni na patro, kde stojí.");
+        ctx.prompt("Ťukni, kde stojí.", "Výtah už dojel. Ťukni na patro, kde stojí.");
         return true;
       }
       busy = true;
       const i = progAt++;
       progEls[i].classList.add("active");
-      ctx.prompt("Jeden krok jsem odjel za tebe. Kde skončí teď?");
+      ctx.prompt("Kde zastaví teď?", "Jeden krok jsem odjel za tebe. Kde zastaví teď?");
       ride(P.program[i]).then((ok) => {
         if (!ok) return;
         progEls[i].classList.remove("active");

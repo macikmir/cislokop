@@ -1,7 +1,7 @@
 "use strict";
 // Service worker: hra funguje offline. Při změně souborů zvyš verzi cache —
 // jinak prohlížeč nepozná, že je co stahovat. Nový soubor přidej i do ASSETS.
-const CACHE = "cislokop-v1";
+const CACHE = "cislokop-v2";
 const ASSETS = [
   ".",
   "index.html",
@@ -17,6 +17,10 @@ const ASSETS = [
   "js/games/lift.js",
   "js/games/chest.js",
   "js/main.js",
+  "fonts/andika-400-latin.woff2",
+  "fonts/andika-400-latin-ext.woff2",
+  "fonts/andika-700-latin.woff2",
+  "fonts/andika-700-latin-ext.woff2",
   "icons/icon-180.png",
   "icons/icon-192.png",
   "icons/icon-512.png",
