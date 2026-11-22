@@ -1,0 +1,17 @@
+{
+  "name": "Číslokop — kostičková matematika",
+  "short_name": "Číslokop",
+  "description": "Kostičková matematika pro prvňáky: spravedlivé dělení, cesty se šipkami, výtah a truhly s číselným kódem.",
+  "lang": "cs",
+  "start_url": ".",
+  "scope": ".",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#58b4f0",
+  "theme_color": "#58b4f0",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

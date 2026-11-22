@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Číslokop — kostičková matematika</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#58b4f0">
+<!-- PWA / iOS "Přidat na plochu" -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Číslokop">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- sonda: z ní se čtou safe-area insety (výřez displeje, home indicator) -->
+<div id="safearea"></div>
+
+<!-- Scéna má pevnou logickou výšku 540 px a celá se zvětšuje podle okna. -->
+<div id="stage">
+
+  <!-- úvod -->
+  <section id="scr-title" class="screen">
+    <div class="sky-clouds"></div>
+    <div class="title-box">
+      <h1 class="logo">ČÍSLOKOP</h1>
+      <p class="logo-sub">kostičková matematika</p>
+      <div class="title-crew" id="titleCrew"></div>
+      <button id="btnPlay" class="btn ok big">HRÁT</button>
+    </div>
+    <div class="title-ground"></div>
+  </section>
+
+  <!-- mapa úrovní -->
+  <section id="scr-map" class="screen hidden">
+    <div id="mapScroll"><div id="mapInner"></div></div>
+    <div class="map-top">
+      <div class="map-logo">ČÍSLOKOP</div>
+      <div class="map-stars"><span class="px star-ic"></span><b id="mapStars">0</b></div>
+      <button id="btnSettings" class="btn round" aria-label="Nastavení"></button>
+    </div>
+  </section>
+
+  <!-- úroveň -->
+  <section id="scr-level" class="screen hidden">
+    <div class="level-ground"></div>
+    <div id="topbar">
+      <button id="btnBack" class="btn round" aria-label="Zpět na mapu"></button>
+      <div id="lights"></div>
+      <div id="promptBox">
+        <span id="prompt"></span>
+        <button id="btnSpeak" class="speak" aria-label="Přečíst nahlas"></button>
+      </div>
+      <button id="btnHint" class="btn round hintbtn" aria-label="Nápověda">?</button>
+    </div>
+    <div id="play"></div>
+  </section>
+
+  <!-- výsledek úrovně -->
+  <div id="ov-result" class="overlay hidden">
+    <div class="panel">
+      <h2 id="resTitle">Hotovo!</h2>
+      <div id="resStars" class="res-stars"></div>
+      <p id="resText" class="res-text"></p>
+      <div class="panel-btns">
+        <button id="btnResMap" class="btn round" aria-label="Mapa"></button>
+        <button id="btnResAgain" class="btn round" aria-label="Znovu"></button>
+        <button id="btnResNext" class="btn ok big">DALŠÍ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- nastavení (pro rodiče) -->
+  <div id="ov-settings" class="overlay hidden">
+    <div class="panel">
+      <h2>Nastavení</h2>
+      <button id="setSound" class="btn wide"></button>
+      <button id="setUnlock" class="btn wide"></button>
+      <button id="setReset" class="btn wide no"></button>
+      <button id="setClose" class="btn ok wide">Zavřít</button>
+      <p class="ver" id="ver"></p>
+    </div>
+  </div>
+
+  <div id="confetti"></div>
+</div>
+
+<!-- na výšku se hrát nedá pohodlně -->
+<div id="rotate" class="hidden"><div class="rot-phone"></div><p>Otoč telefon na šířku</p></div>
+
+<script src="js/util.js"></script>
+<script src="js/store.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/games/feed.js"></script>
+<script src="js/games/cart.js"></script>
+<script src="js/games/lift.js"></script>
+<script src="js/games/chest.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

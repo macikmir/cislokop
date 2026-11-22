@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Číslokop — kontrola úrovní</title>
+<style>body { font: 15px/1.5 ui-monospace, Menlo, monospace; padding: 20px; } .bad { color: #c0392b; font-weight: bold; } .ok { color: #2f8f2f; }</style>
+</head>
+<body>
+<h1>Kontrola úrovní</h1>
+<p>Projde všechna zadání z <code>js/levels.js</code> a ověří, že mají řešení (generovaná na mnoha losováních).
+Otevři po každé úpravě úrovní.</p>
+<pre id="out">běží…</pre>
+<script src="js/util.js"></script>
+<script src="js/store.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/games/feed.js"></script>
+<script src="js/games/cart.js"></script>
+<script src="js/games/lift.js"></script>
+<script src="js/games/chest.js"></script>
+<script>
+"use strict";
+(function () {
+  const SEEDS = 200;
+  const fails = [];
+  let checks = 0;
+  const G = MM.games;
+
+  const CHECK = {
+    feed(spec, rnd) {
+      const P = G.feed.gen(spec, rnd);
+      if (!P) return "generátor nic nevrátil";
+      if (P.target !== Math.round(P.target) || P.target < 1) return "součet nejde rozdělit: " + P.pieces;
+      if (MM.sum(P.pieces) !== P.target * P.animals) return "nesedí součet: " + P.pieces;
+      if (!G.feed.solve(P.pieces, P.animals, P.target)) return "nemá řešení: " + P.pieces;
+      if (P.pieces.length > 12) return "moc kousků (" + P.pieces.length + ")";
+      if (P.pieces.some((v) => v > 10)) return "kousek větší než 10";
+    },
+    chest(spec, rnd) {
+      const P = G.chest.gen(spec, rnd);
+      const res = G.chest.propagate(P.rels, P.values.map((v, i) => (P.given[i] ? v : null)));
+      if (!res.solved) return "nejde dopočítat po krocích";
+      if (res.values.some((v, i) => v !== P.values[i])) return "dopočet se liší od řešení";
+      if (P.values.some((v) => v < 0 || v > spec.max)) return "číslo mimo rozsah: " + P.values;
+      if (!P.given.some((g) => !g)) return "nic nechybí";
+    },
+    cart(spec) {
+      const g = G.cart.parse(spec.grid);
+      if (!g.start || !g.goal) return "chybí start nebo truhla";
+      const steps = G.cart.solveSteps(g);
+      if (!steps) return "k truhle se nedá dojít";
+      if (spec.mode === "given") {
+        const tiles = spec.tiles.map(G.cart.tile);
+        const sol = G.cart.solveGiven(g, tiles, []);
+        if (!sol) return "z daných šipek cesta nejde složit";
+        if (!G.cart.run(g, sol.map((i) => tiles[i])).ok) return "řešení neprošlo";
+      }
+      if (spec.mode === "free") {
+        const prog = G.cart.merge(steps);
+        if (prog.length > spec.slots) return "nejkratší cesta potřebuje " + prog.length + " kartiček, slots = " + spec.slots;
+      }
+    },
+    lift(spec, rnd) {
+      const P = G.lift.gen(spec, rnd);
+      if (P.mode === "predict") {
+        let f = P.start;
+        for (const s of P.program) { f += s; if (f < 0 || f > P.max) return "program vyjede z věže"; }
+        if (f === P.start) return "výtah skončí tam, kde začal";
+        return;
+      }
+      let from = P.start;
+      for (const t of P.targets) {
+        if (t < 0 || t > P.max) return "patro mimo věž: " + t;
+        if (!G.lift.route(P.max, P.buttons, from, t)) return "patro " + t + " se nedá dosáhnout z " + from;
+        from = t;
+      }
+    },
+  };
+
+  MM.levels.forEach((lv) => {
+    lv.rounds.forEach((spec, r) => {
+      const fixed = lv.game === "cart" || spec.pieces || spec.targets || spec.program;
+      for (let seed = 1; seed <= (fixed ? 1 : SEEDS); seed++) {
+        checks++;
+        let msg;
+        try { msg = CHECK[lv.game](spec, MM.rng(seed * 977 + r)); }
+        catch (e) { msg = "výjimka: " + e.message; }
+        if (msg) { fails.push("úroveň " + (lv.index + 1) + " (" + lv.id + ", " + lv.game + "), kolo " + (r + 1) + ": " + msg); break; }
+      }
+    });
+  });
+
+  const ids = MM.levels.map((l) => l.id);
+  ids.forEach((id, i) => { if (ids.indexOf(id) !== i) fails.push("duplicitní id úrovně: " + id); });
+
+  const out = document.getElementById("out");
+  out.className = fails.length ? "bad" : "ok";
+  out.textContent = fails.length
+    ? "CHYBY (" + fails.length + "):\n" + fails.join("\n")
+    : "VŠE V POŘÁDKU — " + MM.levels.length + " úrovní, " + checks + " kontrol.";
+})();
+</script>
+</body>
+</html>
